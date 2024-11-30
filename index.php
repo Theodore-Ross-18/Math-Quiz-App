@@ -271,7 +271,19 @@ function generateQuestion($settings) {
             </form>
         </div>
     <?php endif; ?>
-
+    <script>
+        function toggleCustomLevelInput() {
+            const levelSelect = document.getElementById('level-select');
+            const customLevelContainer = document.getElementById('custom-level-container');
+            if (levelSelect.value === 'custom') {
+                customLevelContainer.style.display = 'block';
+            } else {
+                customLevelContainer.style.display = 'none';
+            }
+        }
+        // Call this function on page load to check if custom level is selected
+        window.onload = toggleCustomLevelInput;
+    </script>
 </div>
 </body>
 </html>
