@@ -163,6 +163,48 @@ if ($_SESSION['correctScore'] + $_SESSION['wrongScore'] >= $_SESSION['settings']
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Math Quiz Web Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            display: inline-block;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .settings, .question, .scoreboard {
+            margin: 20px 0;
+        }
+        .answers button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+        .controls button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .correct {
+            background-color: green;
+            color: white;
+        }
+        .wrong {
+            background-color: red;
+            color: white;
+        }
+        .disabled {
+            background-color: lightgray;
+            pointer-events: none;
+        }
+        .success-message {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
