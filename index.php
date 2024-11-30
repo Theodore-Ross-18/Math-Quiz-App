@@ -140,6 +140,20 @@ function generateQuestion($settings) {
     ];
 }
 
+// Function to calculate percentage grade
+function calculateGrade($correctScore, $totalQuestions) {
+    $percentage = ($correctScore / $totalQuestions) * 100; // Calculate percentage
+    return number_format($percentage, 2); // Format to 2 decimal places
+}
+
+$questionData = $_SESSION['started'] ? $_SESSION['currentQuestion'] : null; // Get current question if quiz started
+
+$quizEnded = false;
+if ($_SESSION['correctScore'] + $_SESSION['wrongScore'] >= $_SESSION['settings']['numQuestions']) {
+    // Check if all questions have been answered
+    $quizEnded = true; // Mark quiz as ended
+    $grade = calculateGrade($_SESSION['correctScore'], $_SESSION['settings']['numQuestions']); // Calculate final grade
+}
 ?>
 
 <!-- HTML -->
