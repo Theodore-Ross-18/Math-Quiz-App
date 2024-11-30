@@ -38,6 +38,35 @@ if (isset($_POST['action'])) {
     }
 }
 
+// Initialize session settings if not set
+if (!isset($_SESSION['settings'])) {
+    $_SESSION['settings'] = [
+        'level' => '1-10', // Default difficulty level
+        'operator' => 'add', // Default operator (addition)
+        'numQuestions' => 10, // Default number of questions
+        'numChoices' => 4, // Default number of choices per question
+        'maxDifference' => 10, // Default maximum difference for questions
+    ];
+}
+
+// Handle Settings Update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save-settings'])) {
+    // Update level if custom is selected, otherwise use the default
+    $level = $_POST['level'] === 'custom' ? $_POST['custom-level'] : $_POST['level'];
+    
+    // Update session settings based on form input
+    $_SESSION['settings'] = [
+        'level' => $level, // Set the level
+        'operator' => $_POST['operator'], // Set the operator
+        'numQuestions' => (int)$_POST['numQuestions'], // Set the number of questions
+        'numChoices' => (int)$_POST['numChoices'], // Set the number of answer choices
+        'maxDifference' => (int)$_POST['maxDifference'], // Set the max difference for questions
+    ];
+    
+    // Set a success message in session
+    $_SESSION['settings_message'] = "Settings successfully updated!"; // Notify user of success
+}
+
 ?>
 
 <!-- HTML -->
