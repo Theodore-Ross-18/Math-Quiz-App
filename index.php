@@ -67,6 +67,79 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save-settings'])) {
     $_SESSION['settings_message'] = "Settings successfully updated!"; // Notify user of success
 }
 
+// Handle Answer Submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user-answer'])) {
+    if ($_SESSION['started'] && !$_SESSION['answered']) {
+        $correctAnswer = (int)$_POST['correct-answer']; // Get the correct answer
+        $userAnswer = (int)$_POST['user-answer']; // Get user's answer
+
+        // Validate answer and update scores
+        if ($userAnswer === $correctAnswer) {
+            $_SESSION['correctScore']++; // Increment correct score
+            $answerFeedback = 'correct'; // Mark feedback as correct
+        } else {
+            $_SESSION['wrongScore']++; // Increment wrong score
+            $answerFeedback = 'wrong'; // Mark feedback as wrong
+        }
+
+        $_SESSION['answered'] = true; // Mark the question as answered
+    }
+}
+
+// Handle "Next" Button Click
+if (isset($_POST['action']) && $_POST['action'] === 'next') {
+    $_SESSION['answered'] = false; // Reset the answered flag
+    $_SESSION['currentQuestion'] = generateQuestion($_SESSION['settings']); // Generate a new question
+}
+
+// Generate a question based on settings
+function generateQuestion($settings) {
+    $range = explode('-', $settings['level']); // Get level range
+
+    // Handle custom level parsing
+    if (count($range) == 1 && strpos($range[0], '-') !== false) {
+        $range = explode('-', $range[0]);
+    }
+
+    $num1 = rand((int)$range[0], (int)$range[1]); // Generate first number
+    $num2 = rand((int)$range[0], (int)$range[1]); // Generate second number
+
+    // Generate question and answer based on operator
+    switch ($settings['operator']) {
+        case 'add':
+            $question = "$num1 + $num2 = ?";
+            $answer = $num1 + $num2;
+            break;
+        case 'subtract':
+            $question = "$num1 - $num2 = ?";
+            $answer = $num1 - $num2;
+            break;
+        case 'multiply':
+            $question = "$num1 × $num2 = ?";
+            $answer = $num1 * $num2;
+            break;
+        default:
+            $question = "$num1 + $num2 = ?";
+            $answer = $num1 + $num2;
+    }
+
+    // Generate unique answer choices
+    $choices = [$answer];
+    while (count($choices) < $settings['numChoices']) {
+        $randomChoice = $answer + rand(-$settings['maxDifference'], $settings['maxDifference']);
+        if (!in_array($randomChoice, $choices)) {
+            $choices[] = $randomChoice; // Add unique random choice
+        }
+    }
+    shuffle($choices); // Shuffle the choices
+
+    return [
+        'question' => $question, // Question text
+        'answer' => $answer, // Correct answer
+        'choices' => $choices, // All answer choices
+    ];
+}
+
 ?>
 
 <!-- HTML -->
