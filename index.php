@@ -1,5 +1,10 @@
 <!-- Math Quiz Web Application using Php -->
 
+<!-- PHP -->
+<?php
+
+?>
+
 <!-- HTML -->
 <!DOCTYPE html>
 <html lang="en">
