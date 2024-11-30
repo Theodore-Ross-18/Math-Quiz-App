@@ -120,6 +120,85 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save-settings'])) {
             <input type="hidden" name="correct-answer" value="<?= $questionData['answer'] ?>"> <!-- Store correct answer -->
         <?php endif; ?>
     </form>
+
+    <!-- Scoreboard -->
+    <div class="scoreboard" style="display: <?= $_SESSION['started'] ? 'block' : 'none' ?>;">
+        <p><b>Score</b></p>
+        <p>Correct: <?= $_SESSION['correctScore'] ?></p> <!-- Display correct score -->
+        <p>Wrong: <?= $_SESSION['wrongScore'] ?></p> <!-- Display wrong score -->
+
+        <?php if ($quizEnded): ?>
+            <p><b>Your Grade is:</b> <?= $grade ?>%</p> <!-- Display final grade -->
+            <form method="POST">
+                <button type="submit" name="action" value="close">Again</button> <!-- Restart button -->
+            </form>
+        <?php endif; ?>
+    </div>
+
+    <!-- Next Button -->
+    <?php if ($_SESSION['started'] && $_SESSION['answered'] && !$quizEnded): ?>
+        <form method="POST">
+            <button type="submit" name="action" value="next">Next</button> <!-- Next question button -->
+        </form>
+    <?php endif; ?>
+
+    <!-- Settings (Hidden when quiz started) -->
+    <?php if (!$_SESSION['started']): ?>
+        <div class="settings">
+            <h3>Settings</h3>
+            <?php if (isset($_SESSION['settings_message'])): ?>
+                <p class="success-message"><?= $_SESSION['settings_message'] ?></p> <!-- Display settings update success message -->
+                <?php unset($_SESSION['settings_message']); ?>
+            <?php endif; ?>
+            <form method="POST">
+                <label>
+                    Level:
+                    <select name="level" id="level-select" onchange="toggleCustomLevelInput()">
+                        <option value="1-10" <?= $_SESSION['settings']['level'] === '1-10' ? 'selected' : '' ?>>1-10</option>
+                        <option value="1-20" <?= $_SESSION['settings']['level'] === '1-20' ? 'selected' : '' ?>>1-20</option>
+                        <option value="custom" <?= $_SESSION['settings']['level'] === 'custom' ? 'selected' : '' ?>>Custom</option>
+                    </select>
+                </label>
+                <br>
+
+                <!-- Custom Level Input -->
+                <div id="custom-level-container" style="display: <?= $_SESSION['settings']['level'] === 'custom' ? 'block' : 'none' ?>;">
+                    <label>
+                        Custom Level (e.g., 5-15):
+                        <input type="text" name="custom-level" value="<?= isset($_SESSION['settings']['custom-level']) ? $_SESSION['settings']['custom-level'] : '' ?>">
+                    </label>
+                    <br>
+                </div>
+
+                <label>
+                    Operator:
+                    <select name="operator">
+                        <option value="add" <?= $_SESSION['settings']['operator'] === 'add' ? 'selected' : '' ?>>Addition</option>
+                        <option value="subtract" <?= $_SESSION['settings']['operator'] === 'subtract' ? 'selected' : '' ?>>Subtraction</option>
+                        <option value="multiply" <?= $_SESSION['settings']['operator'] === 'multiply' ? 'selected' : '' ?>>Multiplication</option>
+                    </select>
+                </label>
+                <br>
+                <label>
+                    Number of Questions:
+                    <input type="number" name="numQuestions" value="<?= $_SESSION['settings']['numQuestions'] ?>" min="5" max="20">
+                </label>
+                <br>
+                <label>
+                    Number of Choices:
+                    <input type="number" name="numChoices" value="<?= $_SESSION['settings']['numChoices'] ?>" min="2" max="5">
+                </label>
+                <br>
+                <label>
+                    Max Difference:
+                    <input type="number" name="maxDifference" value="<?= $_SESSION['settings']['maxDifference'] ?>" min="1" max="10">
+                </label>
+                <br>
+                <button type="submit" name="save-settings">Save</button> <!-- Save settings button -->
+            </form>
+        </div>
+    <?php endif; ?>
+
 </div>
 </body>
 </html>
