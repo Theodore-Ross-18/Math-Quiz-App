@@ -17,6 +17,27 @@ if (!isset($_SESSION['wrongScore'])) {
 if (!isset($_SESSION['answered'])) {
     $_SESSION['answered'] = false; // Track if an answer has been selected
 }
+
+// Initialize current question session variable if not set
+if (!isset($_SESSION['currentQuestion'])) {
+    $_SESSION['currentQuestion'] = null; // Track current question
+}
+
+// Handle Start and Close actions
+if (isset($_POST['action'])) {
+    if ($_POST['action'] === 'start') {
+        $_SESSION['started'] = true; // Start the quiz
+        $_SESSION['correctScore'] = 0; // Reset correct score
+        $_SESSION['wrongScore'] = 0; // Reset wrong score
+        $_SESSION['answered'] = false; // Reset answered state
+        $_SESSION['currentQuestion'] = generateQuestion($_SESSION['settings']); // Generate a new question
+    } elseif ($_POST['action'] === 'close') {
+        session_destroy(); // End the session
+        echo "<script>alert('Quiz Closed!'); window.location.href = '';</script>"; // Alert and reload page
+        exit();
+    }
+}
+
 ?>
 
 <!-- HTML -->
